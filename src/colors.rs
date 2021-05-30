@@ -32,6 +32,7 @@ macro_rules! colors_iterable_enum {
     };
 }
 
+// https://www.w3.org/TR/CSS22/syndata.html#color-units
 colors_iterable_enum!(
     pub, Colors, 
     Aqua,
