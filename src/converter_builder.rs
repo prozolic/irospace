@@ -1,23 +1,19 @@
 
-use std::marker::PhantomData;
+use std::{marker::PhantomData};
 
 use crate::rgb::RgbColor;
 use crate::hsv::HsvColor;
 use crate::hsl::HslColor;
 use crate::converter::*;
 
-struct HtmlConverterOption
-{
-    char_case: CharCase,
-}
 
 pub struct ColorConverterBuilder{}
 pub struct ColorConverterFromBuilder<TFrom>( PhantomData<TFrom> );
 pub struct ColorConverterFromToBuilder<TFrom, TTo>( PhantomData<TFrom>, PhantomData<TTo>);
 
-pub struct HtmlConverterFromBuilder( HtmlConverterOption );
+pub struct HtmlConverterFromBuilder{}
 
-pub struct HtmlConverterFromToBuilder<TTo>( HtmlConverterOption, PhantomData<TTo> );
+pub struct HtmlConverterFromToBuilder<TTo>(PhantomData<TTo> );
 
 
 impl ColorConverterBuilder
@@ -42,11 +38,28 @@ impl ColorConverterBuilder
         ColorConverterFromBuilder(PhantomData)
     }
 
-    pub fn from_html(&self, char_case: CharCase) -> HtmlConverterFromBuilder
+    pub fn from_html(&self) -> HtmlConverterFromBuilder
     {
-        HtmlConverterFromBuilder(HtmlConverterOption{char_case})
+        HtmlConverterFromBuilder{}
+    }
+}
+
+impl HtmlConverterFromBuilder
+{
+    pub fn to_rgb(&self) -> ColorConverterFromToBuilder<HtmlColorCode, RgbColor>
+    {
+        ColorConverterFromToBuilder(PhantomData,PhantomData)
     }
 
+    pub fn to_hsv(&self) -> ColorConverterFromToBuilder<HtmlColorCode, HsvColor>
+    {
+        ColorConverterFromToBuilder(PhantomData,PhantomData)
+    }
+
+    pub fn to_hsl(&self) -> ColorConverterFromToBuilder<HtmlColorCode, HslColor>
+    {
+        ColorConverterFromToBuilder(PhantomData,PhantomData)
+    }
 }
 
 #[allow(unused_macros)]
@@ -66,6 +79,11 @@ macro_rules! color_from_builder
             }
         
             pub fn to_hsl(&self) -> ColorConverterFromToBuilder<$from_name, HslColor>
+            {
+                ColorConverterFromToBuilder(PhantomData,PhantomData)
+            }
+
+            pub fn to_html(&self) -> ColorConverterFromToBuilder<$from_name, HtmlColorCode>
             {
                 ColorConverterFromToBuilder(PhantomData,PhantomData)
             }
@@ -105,7 +123,12 @@ color_from_to_builder!(HslToHsvConverter,HslColor,HsvColor);
 color_from_to_builder!(HslToHslConverter,HslColor,HslColor);
 
 color_from_to_builder!(HtmlToRgbConverter,HtmlColorCode,RgbColor);
+color_from_to_builder!(HtmlToHsvConverter,HtmlColorCode,HsvColor);
+color_from_to_builder!(HtmlToHslConverter,HtmlColorCode,HslColor);
 
+color_from_to_builder!(RgbToHtmlConverter,RgbColor,HtmlColorCode);
+color_from_to_builder!(HslToHtmlConverter,HsvColor,HtmlColorCode);
+color_from_to_builder!(HsvToHtmlConverter,HslColor,HtmlColorCode);
 
 
 #[cfg(test)]
@@ -117,6 +140,20 @@ mod tests
     fn color_build_new_test() {
         let converter = ColorConverterBuilder::new().from_rgb().to_hsv().build();
         assert_eq!(converter.convert(&RgbColor::new(255,0,0)).unwrap(), HsvColor::new(0,100,100));
+
+    }
+
+    #[test]
+    fn color_build_new_test2() {
+        let converter = ColorConverterBuilder::new().from_rgb().to_html().build();
+        assert_eq!(converter.convert(&RgbColor::new(255,0,0)).unwrap(), HtmlColorCode::new("#ff0000"));
+
+    }
+
+    #[test]
+    fn color_build_new_test3() {
+        let converter = ColorConverterBuilder::new().from_html().to_rgb().build();
+        assert_eq!(converter.convert(&HtmlColorCode::new("#ff0000")).unwrap(), RgbColor::new(255,0,0));
 
     }
 }

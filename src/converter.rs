@@ -336,23 +336,21 @@ impl HtmlColorCode
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub struct RgbToHtmlConverter
-{
-    pub case : CharCase,
-}
+{}
 
 impl Conversion<&RgbColor, HtmlColorCode> for RgbToHtmlConverter
 {
     fn convert(&self, rgb : &RgbColor) -> Result<HtmlColorCode>
     {
-        self.to_html(&rgb)
+        self.convert_with_charcase(&rgb, CharCase::Lower)
     }
 }
 
 impl RgbToHtmlConverter
 {
-    fn to_html(&self, rgb : &RgbColor) -> Result<HtmlColorCode>
+    fn convert_with_charcase(&self, rgb: &RgbColor, charcase: CharCase) -> Result<HtmlColorCode>
     {
-        match self.case
+        match charcase
         {
             CharCase::Lower => Ok(self.to_html_lower(&rgb)),
             CharCase::Upper => Ok(self.to_html_upper(&rgb)),
@@ -377,6 +375,66 @@ impl RgbToHtmlConverter
         core::decimal_to_upper_hexstring(rgb.g(), &mut html_array[3..5]);
         core::decimal_to_upper_hexstring(rgb.b(), &mut html_array[5..7]);
         HtmlColorCode::new(html_array.iter().map(|&s| s as char).collect::<String>())
+    }
+
+}
+
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+pub struct HsvToHtmlConverter
+{}
+
+impl Conversion<&HsvColor, HtmlColorCode> for HsvToHtmlConverter
+{
+    fn convert(&self, hsv : &HsvColor) -> Result<HtmlColorCode>
+    {
+        self.convert_with_charcase(&hsv, CharCase::Lower)
+    }
+}
+
+impl HsvToHtmlConverter
+{
+    fn convert_with_charcase(&self, hsv: &HsvColor, charcase: CharCase) -> Result<HtmlColorCode>
+    {
+        let result = HsvToRgbConverter{}.convert(hsv);
+
+        if let Ok(rgb) = result
+        {
+            RgbToHtmlConverter{}.convert_with_charcase(&rgb, charcase)
+        }
+        else
+        {
+            Err(errors::Error::new(errors::ErrorCode::InvalidArgument, hsv.to_string()))
+        }
+    }
+
+}
+
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+pub struct HslToHtmlConverter
+{}
+
+impl Conversion<&HslColor, HtmlColorCode> for HslToHtmlConverter
+{
+    fn convert(&self, hsl : &HslColor) -> Result<HtmlColorCode>
+    {
+        self.convert_with_charcase(&hsl, CharCase::Lower)
+    }
+}
+
+impl HslToHtmlConverter
+{
+    fn convert_with_charcase(&self, hsl: &HslColor, charcase: CharCase) -> Result<HtmlColorCode>
+    {
+        let result = HslToRgbConverter{}.convert(hsl);
+
+        if let Ok(rgb) = result
+        {
+            RgbToHtmlConverter{}.convert_with_charcase(&rgb, charcase)
+        }
+        else
+        {
+            Err(errors::Error::new(errors::ErrorCode::InvalidArgument, hsl.to_string()))
+        }
     }
 
 }
@@ -755,7 +813,7 @@ mod tests
     #[test]
     fn to_html_lower_new_test() {
         let rgb = RgbColor::new(255, 0, 0);
-        let html = RgbToHtmlConverter{case : CharCase::Lower}.convert(&rgb).unwrap();
+        let html = RgbToHtmlConverter{}.convert(&rgb).unwrap();
 
         assert_eq!(html, HtmlColorCode::new("#ff0000"));
     }
@@ -763,7 +821,7 @@ mod tests
     #[test]
     fn to_html_lower_new_test2() {
         let rgb = RgbColor::new(124, 53, 234);
-        let html = RgbToHtmlConverter{case : CharCase::Lower}.convert(&rgb).unwrap();
+        let html = RgbToHtmlConverter{}.convert(&rgb).unwrap();
 
         assert_eq!(html, HtmlColorCode::new("#7c35ea"));
     }
@@ -771,7 +829,7 @@ mod tests
     #[test]
     fn to_html_upper_new_test() {
         let rgb = RgbColor::new(255, 0, 0);
-        let html = RgbToHtmlConverter{case : CharCase::Upper}.convert(&rgb).unwrap();
+        let html = RgbToHtmlConverter{}.convert_with_charcase(&rgb, CharCase::Upper).unwrap();
 
         assert_eq!(html, HtmlColorCode::new("#FF0000"));
     }
@@ -780,7 +838,7 @@ mod tests
     #[test]
     fn to_html_upper_new_test2() {
         let rgb = RgbColor::new(124, 53, 234);
-        let html = RgbToHtmlConverter{case : CharCase::Upper}.convert(&rgb).unwrap();
+        let html = RgbToHtmlConverter{}.convert_with_charcase(&rgb, CharCase::Upper).unwrap();
         assert_eq!(html, HtmlColorCode::new("#7C35EA"));
     }
 

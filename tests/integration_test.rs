@@ -28,11 +28,43 @@ fn colors_test()
 
 
 #[test]
-fn common_test()
+fn common_test_from_rgb_to_hsv()
 {
     let converter = ColorConverterBuilder::new().from_rgb().to_hsv().build();
-    assert_eq!(converter.convert(&Colors::Red.to_rgb()).unwrap(), HsvColor::new(0,100,100)); 
+    assert_eq!(converter.convert(&Colors::Red.to_rgb()).unwrap(), Colors::Red.to_hsv()); 
 }
 
+#[test]
+fn common_test_from_rgb_to_hsl()
+{
+    let converter = ColorConverterBuilder::new().from_rgb().to_hsl().build();
+    assert_eq!(converter.convert(&Colors::Red.to_rgb()).unwrap(), Colors::Red.to_hsl()); 
+}
 
+#[test]
+fn common_test_from_hsv_to_rgb()
+{
+    let converter = ColorConverterBuilder::new().from_hsv().to_rgb().build();
+    assert_eq!(converter.convert(&Colors::Red.to_hsv()).unwrap(), Colors::Red.to_rgb()); 
+}
 
+#[test]
+fn common_test_from_hsv_to_hsl()
+{
+    let converter = ColorConverterBuilder::new().from_hsv().to_hsl().build();
+    assert_eq!(converter.convert(&Colors::Red.to_hsv()).unwrap(), Colors::Red.to_hsl()); 
+}
+
+#[test]
+fn common_test_from_hsl_to_rgb()
+{
+    let converter = ColorConverterBuilder::new().from_hsl().to_rgb().build();
+    assert_eq!(converter.convert(&Colors::Red.to_hsl()).unwrap(), Colors::Red.to_rgb()); 
+}
+
+#[test]
+fn common_test_from_hsl_to_hsv()
+{
+    let converter = ColorConverterBuilder::new().from_hsl().to_hsv().build();
+    assert_eq!(converter.convert(&Colors::Red.to_hsl()).unwrap(), Colors::Red.to_hsv()); 
+}
