@@ -1,4 +1,6 @@
 
+use std::fmt::Display;
+
 use crate::{errors::ErrorCategory, utils};
 use crate::rgb::RgbColor;
 use crate::hsv::HsvColor;
@@ -314,6 +316,13 @@ pub enum CharCase
 pub struct HtmlColorCode
 {
     value: String
+}
+
+impl Display for HtmlColorCode
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.value_ref())
+    }
 }
 
 impl HtmlColorCode
@@ -808,7 +817,6 @@ mod tests
         assert_eq!(hsv, HsvColor::new(240, 100, 100));
 
     }
-
 
     #[test]
     fn to_html_lower_new_test() {
