@@ -16,6 +16,7 @@ irospaceは、単純な色空間や色空間変換処理を提供するライブ
 + HSL
 
 ## サポートカラー(17色)
+[CSS22 カラーキーワード](https://www.w3.org/TR/CSS22/syndata.html#color-units)と同等の色を定義しています。
 * Aqua
 * Black
 * Blue,
@@ -54,8 +55,8 @@ fn from_rgb_to_hsv()
 fn from_rgb_to_hsl()
 {
     let rgb = RgbColor::new(255,0,0);
-    let converter = ColorConverterBuilder::new().from_rgb().to_hsv().build();
-    let hsv = converter.convert(&rgb).unwrap();
+    let converter = ColorConverterBuilder::new().from_rgb().to_hsl().build();
+    let hsl = converter.convert(&rgb).unwrap();
     // HslColor H = 0 S = 100 L = 50 A = 255
 }
 ```
