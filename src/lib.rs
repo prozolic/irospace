@@ -5,6 +5,8 @@ pub mod colors;
 pub mod rgb;
 pub mod hsv;
 pub mod hsl;
+pub mod srgb;
+
 pub mod errors;
 pub mod converter;
 pub mod converter_builder;
