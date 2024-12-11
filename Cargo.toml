@@ -1,6 +1,6 @@
 [package]
 name = "irospace"
-version = "0.0.2"
+version = "0.1.0"
 authors = ["prozolic <42107886+prozolic@users.noreply.github.com>"]
 edition = "2021"
 description = "color space and conversion method"
