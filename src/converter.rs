@@ -1,7 +1,7 @@
 
 use std::fmt::Display;
 
-use crate::{errors::ErrorCategory, utils};
+use crate::utils;
 use crate::rgb::RgbColor;
 use crate::hsv::HsvColor;
 use crate::hsl::HslColor;
@@ -114,7 +114,7 @@ impl Conversion<&RgbColor, HslColor> for RgbToHslConverter
             
             if max == r
             {
-                h = ((g as i32 - b as i32) * 60 / (max - min) as i32);
+                h = (g as i32 - b as i32) * 60 / (max - min) as i32;
             }
             else if max == g
             {

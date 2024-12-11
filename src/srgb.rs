@@ -1,7 +1,7 @@
 
 use std::fmt::Display;
 
-#[warn(non_camel_case_types)]
+#[allow(non_camel_case_types)]
 #[derive(Debug,Default,PartialEq,Clone,Copy)]
 pub struct sRgbColor
 {

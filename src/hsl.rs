@@ -67,7 +67,6 @@ mod tests
 {
     use super::*;
 
-
     #[test]
     fn hsl_new_test() {
         let red = HslColor::new(0,100,100);

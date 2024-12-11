@@ -1,7 +1,6 @@
 
 extern crate irospace;
 use irospace::{colors::Colors,
-    RgbColor,HsvColor,HslColor,
     converter::*,
     ColorConverterBuilder};
 
